@@ -1,4 +1,4 @@
-# retirement_planner_app.py (back to single-page with tabs, accurate year calc)
+# retirement_planner_app.py (Phase 2 restored Lump Sum + Monthly investment)
 import streamlit as st
 from datetime import date, datetime
 import numpy as np
@@ -23,7 +23,9 @@ def init_session():
         "monthly_saving": 0.0,
         "future_required": 0.0,
         "monthly_invest": 0.0,
-        "monthly_start_date": date.today()
+        "monthly_start_date": date.today(),
+        "initial_lump": 0.0,
+        "extra_lumps": []
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -76,16 +78,31 @@ with phase2_tab:
     rates = list(range(4, 13))
     base_year = date.today().year
 
+    st.markdown("### 🪙 Lump Sum Investments")
+    st.session_state['initial_lump'] = st.number_input("Initial Lump Sum (RM)", value=st.session_state['initial_lump'])
+    num_extra_lumps = st.number_input("Number of Additional Lump Sums", value=len(st.session_state['extra_lumps']), min_value=0, step=1)
+
+    extra_lumps = []
+    for i in range(num_extra_lumps):
+        col1, col2 = st.columns(2)
+        with col1:
+            amt = st.number_input(f"Lump Sum {i+1} Amount", key=f"lump_amt_{i}", value=0.0)
+        with col2:
+            yr = st.number_input(f"Lump Sum {i+1} Year", key=f"lump_yr_{i}", value=base_year, step=1)
+        extra_lumps.append((yr, amt))
+    st.session_state['extra_lumps'] = extra_lumps
+
+    st.markdown("### 💸 Monthly Investments")
     st.session_state['monthly_invest'] = st.number_input("Monthly Investment Amount (RM)", value=st.session_state['monthly_invest'])
     st.session_state['monthly_start_date'] = st.date_input("Start Date for Monthly Investment", value=st.session_state['monthly_start_date'])
     monthly_start_year = st.session_state['monthly_start_date'].year
     monthly_start_month = st.session_state['monthly_start_date'].month
 
-    calendar_years = np.arange(monthly_start_year, monthly_start_year + years_to_retire + 1)
+    calendar_years = np.arange(base_year, base_year + years_to_retire + 1)
     projections = pd.DataFrame({
-        "Year": np.arange(1, years_to_retire + 2),
-        "Age": current_age + np.arange(1, years_to_retire + 2),
-        "Calendar Year": calendar_years
+        "Year": np.arange(1, years_to_retire + 1),
+        "Age": current_age + np.arange(1, years_to_retire + 1),
+        "Calendar Year": calendar_years[1:]
     })
 
     result_summary = []
@@ -93,15 +110,19 @@ with phase2_tab:
         rate = r / 100
         balances = []
         balance = 0
-        for i, y in enumerate(calendar_years):
-            if i == 0:
+        for y in calendar_years:
+            yearly_contrib = 0
+            if y == base_year:
+                yearly_contrib += st.session_state['initial_lump']
+            yearly_contrib += sum(amt for yr, amt in st.session_state['extra_lumps'] if yr == y)
+            if y == monthly_start_year:
                 months = 12 - monthly_start_month + 1
-            else:
-                months = 12
-            yearly_contrib = st.session_state['monthly_invest'] * months
+                yearly_contrib += st.session_state['monthly_invest'] * months
+            elif y > monthly_start_year:
+                yearly_contrib += st.session_state['monthly_invest'] * 12
             balance = (balance + yearly_contrib) * (1 + rate)
             balances.append(balance)
-        projections[f"{r}%"] = balances
+        projections[f"{r}%"] = balances[1:]
         result_summary.append((r, balances[-1]))
 
     st.subheader("📊 Projected Balance by Net Return Rates")
