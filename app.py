@@ -151,3 +151,4 @@ elif page == "Investment Projection":
         surplus = final_value - st.session_state['future_required']
         status = "✅ Exceeds goal" if surplus >= 0 else "⚠️ Below goal"
         st.write(f"**{rate}% Return:** Final = RM {final_value:,.2f} | Target = RM {st.session_state['future_required']:,.2f} → {status} (Diff: RM {surplus:,.2f})")
+
