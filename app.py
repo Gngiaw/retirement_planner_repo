@@ -53,11 +53,11 @@ def calculate_retirement():
             assets = assets * (1 + return_rate) - annual_withdrawal
 
          # 创建DataFrame
-         df = pd.DataFrame({
-             "年龄": years,
-             "累计资产": savings_projection,
-             "退休需求": needs_projection
-         })
+        df = pd.DataFrame({
+            "年龄": years,
+            "累计资产": savings_projection,
+            "退休需求": needs_projection
+        })
        
         # 显示关键指标
         col1, col2, col3 = st.columns(3)
