@@ -23,37 +23,11 @@ if password != "Rplan888$~":
 st.success("Access granted.")
 st.write("---")
 
-# — CONFIGURATION —
-EXCEL_PATH = "PRO WEALTH LATEST  2025 INVEST PLAN TOOL.xlsx"
-
-# — LOAD DATA —
-@st.cache_data
-def load_data(path):
-    df_data   = pd.read_excel(path, sheet_name="DATA")
-    df_legend = pd.read_excel(path, sheet_name="LEGEND", header=None)
-    return df_data, df_legend
-
-df_data, df_legend = load_data(EXCEL_PATH)
-
 # — SIDEBAR: Investor Details —
 st.sidebar.header("Investor Details")
-inv = df_data.loc[0]
-name = st.sidebar.text_input("Name", value=inv.get("INVESTOR", ""))
-title = st.sidebar.text_input("Title", value=inv.get("TITLE", ""))
-
-def parse_date(val):
-    try:
-        return pd.to_datetime(val, dayfirst=True).date()
-    except:
-        return date.today()
-
-# Date of Birth picker
-dob = st.sidebar.date_input(
-    "Date of Birth",
-    min_value=date(1955, 1, 1), max_value=date.today(),
-    value=parse_date(inv.get("DATE OF BIRTH"))
-)
-contact = st.sidebar.text_input("Contact", value=str(inv.get("CONTACT", "")))
+name = st.sidebar.text_input("Name", value="")
+dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
+contact = st.sidebar.text_input("Contact")
 
 # compute ages
 today = date.today()
@@ -81,9 +55,7 @@ real_return = (1 + gross_return_rate) / (1 + inflation_rate) - 1
 
 # — SIDEBAR: Post-Retirement Planning —
 st.sidebar.header("Post-Retirement Planning")
-monthly_expenses = st.sidebar.number_input(
-    "Monthly Expenses After Retirement (RM)",
-    value=float(inv.get("Estimated Monthly Required Income for Retirement", 0)),
+monthly_expenses = st.sidebar.number_input("Desired Monthly Income after Retirement (RM)", value=5000.0)),
     step=100.0, format="%.2f"
 )
 years_post = st.sidebar.number_input(
