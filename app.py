@@ -62,7 +62,7 @@ def calculate_retirement():
         # 生成时间轴
         base_year = date.today().year
         calendar_years = np.arange(base_year, base_year + years_to_retire + 1)
-        years = list(range(current_age, current_age + len(savings_projection)))
+        years = list(range(current_age, retire_age + retirement_years))
         
         # 初始化资产数组
         assets = initial_lump  # 包含初始一次性投资
