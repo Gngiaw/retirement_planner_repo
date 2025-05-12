@@ -145,9 +145,9 @@ max_years = st.sidebar.number_input(
 savings_projection = []
 years = list(range(current_age, ret_age + years_post))
 for year in range(years_to_retire+1):
-    gross_return_rate = rate / 12
+    rate = gross_return_rate / 12
     months = years * 12
-    future_savings = fv(gross_return_rate, months, -monthly_invest*12, -first_lump)   
+    future_savings = fv(rate, months, -monthly_invest*12, -first_lump)   
     savings_projection.append(future_savings)
    
 # — MAIN PAGE —
