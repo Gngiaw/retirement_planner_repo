@@ -403,9 +403,6 @@ df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
 
     st.altair_chart(chart, use_container_width=True)
 
-# — LEGEND —
-with st.expander("🗒 Legend (raw sheet)"):
-    st.dataframe(df_legend)
 
 # — FULL PDF EXPORT WITH ALL CHARTS & TABLES —
 from io import BytesIO
