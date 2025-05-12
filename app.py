@@ -204,7 +204,7 @@ for rate in rates:
     balances = []
     bal = 0.0
     for y in df_sens['Year']:
-        current_year = start_year + y 
+        current_year = start_year + y -1
         # lumpsums
         year_lumps = 0.0
         if y == 0 and first_lump_date.year == start_year:
