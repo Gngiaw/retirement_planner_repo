@@ -4,6 +4,7 @@ import numpy as np
 from numpy_financial import pmt, fv, pv
 from datetime import date
 import altair as alt
+from collections import defaultdict
 
 st.set_page_config(page_title="Retirement Planner", layout="wide")
 
@@ -197,59 +198,72 @@ rates = np.arange(0.04, 0.13, 0.01)
 start_year = today.year
 end_year = start_year + years_to_retire
 
-# Create base dataframe
+# Build base dataframe
 df_sens = pd.DataFrame({'Year': np.arange(0, years_to_retire+1)})
 df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
 
+# Helper: generate list of all monthly investments (date + amount)
+monthly_cashflow = []
+
+# Base monthly investment
+if monthly_invest > 0:
+    current = monthly_start
+    while current <= datetime(end_year, 12, 1).date():
+        monthly_cashflow.append((current, monthly_invest))
+        # next month
+        if current.month == 12:
+            current = current.replace(year=current.year + 1, month=1)
+        else:
+            current = current.replace(month=current.month + 1)
+
+# Additional monthly investments
+for mdt, mamt in zip(additional_month_dts, additional_month_amts):
+    if mamt <= 0:
+        continue
+    current = mdt
+    while current <= datetime(end_year, 12, 1).date():
+        monthly_cashflow.append((current, mamt))
+        if current.month == 12:
+            current = current.replace(year=current.year + 1, month=1)
+        else:
+            current = current.replace(month=current.month + 1)
+
+# Add all lump sums (on their dates)
+lumps = []
+if first_lump > 0:
+    lumps.append((first_lump_date, first_lump))
+for dt, amt in zip(additional_dts, additional_amts):
+    if amt > 0:
+        lumps.append((dt, amt))
+
+# Final logic to build balances for each rate
 for rate in rates:
-    net_annual = rate - inflation_rate
     balances = []
-    balance = 0.0
-    for i, row in df_sens.iterrows():
-        year = int(row['Calendar Year'])
-        principal = balance  # Start with last year's balance
+    for year in df_sens['Calendar Year']:
+        total = 0.0
+        for date, amount in monthly_cashflow:
+            if date.year > year:
+                continue
+            months_left = (year - date.year) * 12 + (12 - date.month)
+            if months_left <= 0:
+                continue
+            total += fv(rate/12, months_left, 0, -amount)
 
-        # === Lump Sums ===
-        # First lump sum
-        if first_lump_date.year == year - 1:
-            principal += first_lump
+        for date, amount in lumps:
+            if date.year > year - 1:  # lump must be in prior year to count
+                continue
+            total += amount * (1 + rate)
 
-        # Additional lump sums
-        for dt, amt in zip(additional_dts, additional_amts):
-            if dt.year == year - 1:
-                principal += amt
-
-        # === Monthly Investment ===
-        # Months from base investment
-        months_base = 0
-        if monthly_start.year < year:
-            months_base = 12
-        elif monthly_start.year == year:
-            months_base = 12 - monthly_start.month + 1
-        principal += months_base * monthly_invest
-
-        # Additional Monthly Investments
-        for mdt, mamt in zip(additional_month_dts, additional_month_amts):
-            if mdt.year < year:
-                months_add = 12
-            elif mdt.year == year:
-                months_add = 12 - mdt.month + 1
-            else:
-                months_add = 0
-            principal += months_add * mamt
-
-        # === Apply Annual Interest AFTER All Inflows ===
-        balance = principal * (1 + net_annual)
-        balances.append(balance)
-
+        balances.append(total)
     df_sens[f"{int(rate * 100)}%"] = balances
 
-# Format
-fmt = {col: "{:,.2f}" for col in df_sens.columns if col.endswith('%')}
+# Format nicely
+fmt = {col: "{:,.0f}" for col in df_sens.columns if col.endswith('%')}
 fmt.update({"Year": "{:.0f}", "Age": "{:.0f}", "Calendar Year": "{:.0f}"})
 styled = df_sens.style.format(fmt).set_properties(**{'text-align': 'center'})
 st.dataframe(styled)
+
 # — CHART: Projected Balance by Net Return Rates —
 # index by Calendar Year so the x-axis shows the actual year numbers
 import altair as alt
