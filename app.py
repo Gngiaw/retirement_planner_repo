@@ -54,7 +54,7 @@ def calculate_retirement():
     
         # 创建DataFrame
         df = pd.DataFrame({
-            "年龄": years,
+            "年龄": year,
             "累计资产": savings_projection,
             "退休需求": needs_projection
         })
