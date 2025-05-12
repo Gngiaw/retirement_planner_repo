@@ -260,10 +260,11 @@ for rate in rates:
     df_sens[f"{int(real_rate * 100)}%"] = balances
 
 # Format nicely
-fmt = {col: "{:,.0f}" for col in df_sens.columns if col.endswith('%')}
-fmt.update({"Year": "{:.0f}", "Age": "{:.0f}", "Calendar Year": "{:.0f}"})
-styled = df_sens.style.format(fmt).set_properties(**{'text-align': 'center'})
-st.dataframe(styled)
+# format Year, Age, Calendar Year as integers and rates as 2-decimal floats
+fmt = {col: "{:.2f}" for col in df_sens.columns if col.endswith('%')}
+fmt.update({"Year":"{:.0f}", "Age":"{:.0f}", "Calendar Year":"{:.0f}"})
+styled = df_sens.style.format(fmt).set_properties(**{'text-align':'center'})
+st.dataframe(styled) 
 
 # — CHART: Projected Balance by Net Return Rates —
 # index by Calendar Year so the x-axis shows the actual year numbers
