@@ -146,7 +146,7 @@ savings_projection = []
 
 # — MAIN PAGE —
 st.title("📊 Retirement & Investment Planner")
-st.markdown(f"**Name:** {title} {name}")
+st.markdown(f"**Name:** {name}")
 st.markdown(f"**DOB:** {dob.strftime('%d %b %Y')}  **Age:** {current_age} yrs")
 st.markdown(f"**Contact:** {contact}")
 st.markdown(f"**Expected Gross Return Rate:** {gross_return_rate:.1%}")
