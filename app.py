@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
 from numpy_financial import pmt, fv, pv
 
 def calculate_retirement():
