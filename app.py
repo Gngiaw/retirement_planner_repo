@@ -28,25 +28,30 @@ def calculate_retirement():
         return
     
     try:
-        years_to_retire = retire_age - current_age
-        real_return = (1 + return_rate) / (1 + inflation) - 1
+       # 正确计算步骤
+       years_to_retire = retire_age - current_age
 
-        # 计算通胀调整后的需求
-        annual_need_future = monthly_need * 12 * (1 + inflation)**years_to_retire
-        total_need = -pv(real_return, retirement_years, annual_need_future)
-        monthly_save = pmt(return_rate/12, years_to_retire*12, -current_savings, total_need)
+       # 步骤1：计算退休时点的资金总需求（考虑退休期间的通胀）
+       retirement_fund = 0
+       for year in range(1, retirement_years + 1):
+           annual_need = monthly_need * 12 * (1 + inflation)**year
+           retirement_fund += annual_need / (1 + return_rate)**year
 
-        # 生成预测数据
-        years = list(range(current_age, retire_age + 1))
-        savings_projection = []
-        needs_projection = []
-        
-        for year in range(years_to_retire + 1):
-            future_savings = fv(return_rate, year, -monthly_save*12, -current_savings)
-            future_need = annual_need_future * ((1 + inflation)**year) / ((1 + return_rate)**year)
-            savings_projection.append(future_savings)
-            needs_projection.append(future_need)
+       # 步骤2：计算每月储蓄额
+       monthly_save = pmt(return_rate/12, years_to_retire*12, 
+                  -current_savings, retirement_fund)
 
+       # 步骤3：生成预测数据（分两个阶段）
+       # 阶段一：储蓄期（退休前）
+       for year in range(current_age, retire_age):
+           assets = fv(return_rate, year-current_age, -monthly_save*12, -current_savings)
+           needs = 0  # 退休前无支出需求
+    
+       # 阶段二：退休期
+       for year in range(retire_age, retire_age + retirement_years):
+           annual_withdrawal = monthly_need * 12 * (1 + inflation)**(year - retire_age)
+           assets = assets * (1 + return_rate) - annual_withdrawal
+    
         # 创建DataFrame
         df = pd.DataFrame({
             "年龄": years,
