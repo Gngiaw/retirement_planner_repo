@@ -143,7 +143,11 @@ max_years = st.sidebar.number_input(
 )
 
 savings_projection = []
-
+years = list(range(current_age, ret_age + years_post))
+for year in range(years_to_retire + 1):
+    future_savings = fv(return_rate, year, -monthly_save*12, -current_savings)   
+    savings_projection.append(future_savings)
+   
 # — MAIN PAGE —
 st.title("📊 Retirement & Investment Planner")
 st.markdown(f"**Name:** {name}")
