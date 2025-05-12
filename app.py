@@ -154,26 +154,26 @@ for year in range(years_to_retire + 1):
     savings_projection.append(future_savings)
    
 # — MAIN PAGE —
-st.title("📊 Retirement & Investment Planner")
-st.markdown(f"**Name:** {name}")
-st.markdown(f"**DOB:** {dob.strftime('%d %b %Y')}  **Age:** {current_age} yrs")
-st.markdown(f"**Contact:** {contact}")
-st.markdown(f"**Expected Gross Return Rate:** {gross_return_rate:.1%}")
-st.markdown(f"**Expected Inflation Rate:** {inflation_rate:.1%}")
-st.markdown(f"**Years to Retirement:** {years_to_retire} yrs")
+st.title("📊 Retirement & Investment Planner/退休及投资规划")
+st.markdown(f"**Name/姓名:** {name}")
+st.markdown(f"**DOB/出生日期:** {dob.strftime('%d %b %Y')}  **Age:** {current_age} yrs")
+st.markdown(f"**Contact/联系:** {contact}")
+st.markdown(f"**Years to Retirement/距离退休几年:** {years_to_retire} yrs")
+st.markdown(f"**Experted Years to Live After Retirement/退休后生活年数:** {years_post} yrs")
+st.markdown(f"**Desired Monthly Income after Retirement/退休后每月需求:** RM{monthly_expenses}")
+st.markdown(f"**Expected Gross Return Rate/预期年回报率:** {gross_return_rate:.1%}")
+st.markdown(f"**Expected Inflation Rate/预期年通胀率:** {inflation_rate:.1%}")
+
 st.write("---")
 # key metrics
-col1, col2 = st.columns(2)
+col1, col2 = st.columns(3)
 col1.metric("Projected Value at Retirement/预测退休时资产", f"RM{savings_projection[years_to_retire]:,.0f}")
 col2.metric("Future Required at Retirement/退休时需准备资金", f"RM{future_required:,.0f}")
-col3, col4 = st.columns(2)
 with col3:
     adequacy_ratio = savings_projection[years_to_retire] / future_required
     status = "✅ Adequacy/足够" if adequacy_ratio >= 1 else "⚠️ Deficiency/不足"
     st.metric("Adequacy ratio/资金充足率", f"{adequacy_ratio:.0%}", status)
 
-col3.metric("First Lump Date", first_lump_date.strftime('%d %b %Y'))
-col4.metric("Monthly Invest Start", monthly_start.strftime('%d %b %Y'))
 st.write("---")
 
 # — CALCULATE REQUIRED MONTHLY SAVINGS —
