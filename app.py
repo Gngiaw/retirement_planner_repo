@@ -192,52 +192,63 @@ st.write("---")
 
 # — SENSITIVITY TABLE —
 st.subheader("Projected Balance by Net Return Rates")
-rates = np.arange(0.04, 0.13, 0.01)
-start_year = first_lump_date.year
 
+rates = np.arange(0.04, 0.13, 0.01)
+start_year = today.year
+end_year = start_year + years_to_retire
+
+# Create base dataframe
 df_sens = pd.DataFrame({'Year': np.arange(0, years_to_retire+1)})
-# Add Age and Calendar Year columns
 df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
+
 for rate in rates:
-    net_annual = rate
     balances = []
-    bal = 0.0
-    for y in df_sens['Year']:
-        current_year = start_year + y -1
-        # lumpsums
-        year_lumps = 0.0
-        if y == 0 and first_lump_date.year == start_year:
-            year_lumps += first_lump
+    balance = 0.0
+    for i, row in df_sens.iterrows():
+        year = int(row['Calendar Year'])
+        principal = balance  # Start with last year's balance
+
+        # === Lump Sums ===
+        # First lump sum
+        if first_lump_date.year == year - 1:
+            principal += first_lump
+
+        # Additional lump sums
         for dt, amt in zip(additional_dts, additional_amts):
-            if dt.year == current_year:
-                year_lumps += amt
-        # base monthly
-        if y == 0:
-            months_base = 13 - monthly_start.month
-        else:
+            if dt.year == year - 1:
+                principal += amt
+
+        # === Monthly Investment ===
+        # Months from base investment
+        months_base = 0
+        if monthly_start.year < year:
             months_base = 12
-        base_annuity = monthly_invest * months_base
-        # additional monthly streams
-        add_annuity = 0.0
+        elif monthly_start.year == year:
+            months_base = 12 - monthly_start.month + 1
+        principal += months_base * monthly_invest
+
+        # Additional Monthly Investments
         for mdt, mamt in zip(additional_month_dts, additional_month_amts):
-            if mdt.year < current_year:
+            if mdt.year < year:
                 months_add = 12
-            elif mdt.year == current_year:
-                months_add = 13 - mdt.month
+            elif mdt.year == year:
+                months_add = 12 - mdt.month + 1
             else:
                 months_add = 0
-            add_annuity += mamt * months_add
-        principal = bal + year_lumps + base_annuity + add_annuity
-        bal = principal * (1 + net_annual)
-        balances.append(bal)
-    df_sens[f"{int(rate*100)}%"] = balances
-# format Year, Age, Calendar Year as integers and rates as 2-decimal floats
-fmt = {col: "{:.2f}" for col in df_sens.columns if col.endswith('%')}
-fmt.update({"Year":"{:.0f}", "Age":"{:.0f}", "Calendar Year":"{:.0f}"})
-styled = df_sens.style.format(fmt).set_properties(**{'text-align':'center'})
-st.dataframe(styled)   
+            principal += months_add * mamt
 
+        # === Apply Annual Interest AFTER All Inflows ===
+        balance = principal * (1 + rate)
+        balances.append(balance)
+
+    df_sens[f"{int(rate * 100)}%"] = balances
+
+# Format
+fmt = {col: "{:,.2f}" for col in df_sens.columns if col.endswith('%')}
+fmt.update({"Year": "{:.0f}", "Age": "{:.0f}", "Calendar Year": "{:.0f}"})
+styled = df_sens.style.format(fmt).set_properties(**{'text-align': 'center'})
+st.dataframe(styled)
 # — CHART: Projected Balance by Net Return Rates —
 # index by Calendar Year so the x-axis shows the actual year numbers
 import altair as alt
