@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from numpy_financial import pmt, fv, pv
-from datetime import date
+from datetime import datetime, date 
 import altair as alt
 from collections import defaultdict
 
@@ -239,6 +239,7 @@ for dt, amt in zip(additional_dts, additional_amts):
 
 # Final logic to build balances for each rate
 for rate in rates:
+    real_rate = (1 + rate) / (1 + inflation_rate) - 1
     balances = []
     for year in df_sens['Calendar Year']:
         total = 0.0
@@ -248,15 +249,15 @@ for rate in rates:
             months_left = (year - date.year) * 12 + (12 - date.month)
             if months_left <= 0:
                 continue
-            total += fv(rate/12, months_left, 0, -amount)
+            total += fv(real_rate/12, months_left, 0, -amount)
 
         for date, amount in lumps:
             if date.year > year - 1:  # lump must be in prior year to count
                 continue
-            total += amount * (1 + rate)
+            total += amount * (1 + real_rate)
 
         balances.append(total)
-    df_sens[f"{int(rate * 100)}%"] = balances
+    df_sens[f"{int(real_rate * 100)}%"] = balances
 
 # Format nicely
 fmt = {col: "{:,.0f}" for col in df_sens.columns if col.endswith('%')}
