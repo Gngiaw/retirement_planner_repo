@@ -26,24 +26,30 @@ def calculate_retirement():
     if retire_age <= current_age:
         st.error("错误：退休年龄必须大于当前年龄")
         return
+    
     try:
         years_to_retire = retire_age - current_age
-    
-    # 生成年份列表（新增）
-        years = list(range(current_age, retire_age + retirement_years + 1))  # 包含退休后期
-    
-    # 初始化预测数组
+        real_return = (1 + return_rate) / (1 + inflation) - 1
+
+        # 计算通胀调整后的需求
+        annual_need_future = monthly_need * 12 * (1 + inflation)**years_to_retire
+        total_need = -pv(real_return, retirement_years, annual_need_future)
+        monthly_save = pmt(return_rate/12, years_to_retire*12, -current_savings, total_need)
+
+        # 生成年份列表
+        years = list(range(current_age, retire_age + retirement_years + 1))
+        
+        # 初始化预测数组
         savings_projection = []
         needs_projection = []
-    
-    # 阶段一：储蓄期（退休前）
+        
+        # 阶段一：储蓄期（退休前）
         for year in range(years_to_retire + 1):
             future_savings = fv(return_rate, year, -monthly_save*12, -current_savings)
             savings_projection.append(future_savings)
-            needs_projection.append(0)  # 退休前无需求
+            needs_projection.append(0)
 
-    # 阶段二：退休期
-        remaining_years = retirement_years
+        # 阶段二：退休期
         current_assets = savings_projection[-1]
         for year in range(1, retirement_years + 1):
             annual_withdrawal = monthly_need * 12 * (1 + inflation)**year
@@ -51,17 +57,13 @@ def calculate_retirement():
             savings_projection.append(current_assets)
             needs_projection.append(annual_withdrawal)
 
-    # 创建DataFrame
+        # 创建DataFrame
         df = pd.DataFrame({
             "年龄": years,
             "累计资产": savings_projection,
             "退休需求": needs_projection
         })
 
-    except Exception as e:
-        st.error(f"计算错误：{str(e)}")
-        return
-       
         # 显示关键指标
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -97,17 +99,17 @@ def calculate_retirement():
         # 计算最终缺口
         final_gap = savings_projection[-1] - needs_projection[-1]
 
+        # 显示警示信息
+        if final_gap < 0:
+            st.error(f"⚠️ 退休资金缺口: RM{-final_gap:,.0f}")
+            st.write("**建议补救措施：**")
+            st.write(f"1. 每月增加储蓄至少 RM{abs(monthly_save * 0.1):,.0f}")
+            st.write(f"2. 考虑延迟退休年龄至 {retire_age + 2} 岁")
+            st.write("3. 调整投资组合至更高收益配置")
+
     except Exception as e:
         st.error(f"计算错误：{str(e)}")
         return
-
-    # 显示警示信息
-    if final_gap < 0:
-        st.error(f"⚠️ 退休资金缺口: RM{-final_gap:,.0f}")
-        st.write("**建议补救措施：**")
-        st.write("1. 每月增加储蓄至少 RM{0:,.0f}".format(abs(monthly_save * 0.1)))
-        st.write("2. 考虑延迟退休年龄至 {0} 岁".format(retire_age + 2))
-        st.write("3. 调整投资组合至更高收益配置")
 
 if __name__ == "__main__":
     calculate_retirement()
