@@ -6,7 +6,7 @@ from datetime import date
 
 st.set_page_config(page_title="Retirement Planner", layout="wide")
 
-st.title("📊 Welcome to Your Retirement & Investment Planner/欢迎来到您的退休和投资规划")
+st.title("📊 Welcome to Your Retirement & Investment Planner 欢迎来到您的退休和投资规划")
 st.markdown("This personalized tool helps you **project your future** and plan **financial freedom** with confidence.")
 st.markdown("这个个性化工具可以帮助您**规划未来**并自信地规划**财务自由**。")
 st.image(
@@ -179,7 +179,7 @@ st.write("---")
 
 # — CALCULATE REQUIRED MONTHLY SAVINGS —
 st.subheader("Required Monthly Savings to Meet Future Goal")
-net_monthly = (gross_return_rate - inflation_rate) / 12
+net_monthly = (gross_return_rate) / 12
 months = years_to_retire * 12
 if net_monthly != 0:
     req_month = future_required * net_monthly / ((1 + net_monthly)**months - 1)
