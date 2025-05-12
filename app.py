@@ -16,23 +16,22 @@ st.image(
     use_container_width=True
 )
 
-phase1_tab, phase2_tab, phase3_tab = st.tabs(["🧓 Retirement Calculator", "📈 Investment Projection","How Long Will Your Money Last?"])
 
 # — SIDEBAR: Investor Details —
-with phase1_tab:
-    st.sidebar.header("Investor Details")
-    name = st.sidebar.text_input("Name", value="")
-    dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
-    contact = st.sidebar.text_input("Contact")
+
+st.sidebar.header("Investor Details")
+name = st.sidebar.text_input("Name", value="")
+dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
+contact = st.sidebar.text_input("Contact")
 
 # compute ages
-    today = date.today()
-    current_age = today.year - dob.year
-    ret_age = st.sidebar.number_input(
-        "Retirement Age (years old)",
-        value=current_age + 10, min_value=current_age, step=1
+today = date.today()
+current_age = today.year - dob.year
+ret_age = st.sidebar.number_input(
+    "Retirement Age (years old)",
+    value=current_age + 10, min_value=current_age, step=1
 )
-    years_to_retire = ret_age - current_age
+years_to_retire = ret_age - current_age
 
 # — SIDEBAR: Calculator Settings —
 st.sidebar.header("Calculator Settings")
@@ -192,17 +191,16 @@ st.metric("Required Monthly Savings/每月所需储蓄", f"RM{req_month:,.2f}")
 st.write("---")
 
 # — SENSITIVITY TABLE —
-with phase2_tab:
-    st.subheader("Projected Balance by Net Return Rates")
-    rates = np.arange(0.04, 0.13, 0.01)
-    start_year = first_lump_date.year
+st.subheader("Projected Balance by Net Return Rates")
+rates = np.arange(0.04, 0.13, 0.01)
+start_year = first_lump_date.year
 
 df_sens = pd.DataFrame({'Year': np.arange(1, years_to_retire+1)})
 # Add Age and Calendar Year columns
 df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
 for rate in rates:
-    net_annual = rate - inflation_rate
+    net_annual = rate
     balances = []
     bal = 0.0
     for y in df_sens['Year']:
@@ -335,58 +333,56 @@ st.altair_chart(chart, use_container_width=True)
 
 
 # — HOW LONG WILL YOUR MONEY LAST? —
+st.subheader("How Long Will Your Money Last?")
+start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], [], []
 
-with phase3_tab:
-    st.subheader("How Long Will Your Money Last?")
-    start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], [], []
+bal2 = manual_start
+net_ret = gross_growrate - gross_irate
+year = 1
 
-    bal2 = manual_start
-    net_ret = gross_growrate - gross_irate
-    year = 1
-
-    while bal2 > 0 and year <= max_years:
-        years_l.append(year)
-        start_balances.append(bal2)
+while bal2 > 0 and year <= max_years:
+    years_l.append(year)
+    start_balances.append(bal2)
     
-        # 1) earn return
-        r = bal2 * net_ret
-        returns_l.append(r)
+    # 1) earn return
+    r = bal2 * net_ret
+    returns_l.append(r)
     
-        # 2) withdraw
-        w = manual_withdraw * ((1 + gross_irate) ** (years_to_retire))
-        withdrawals_l.append(w)
+    # 2) withdraw
+    w = manual_withdraw * ((1 + gross_irate) ** (years_to_retire))
+    withdrawals_l.append(w)
     
-        # 3) new ending balance
-        end_b = bal2 + r - w
-        end_balances.append(end_b)
+    # 3) new ending balance
+    end_b = bal2 + r - w
+    end_balances.append(end_b)
     
-        # 4) next
-        bal2 = end_b
-        year += 1
+    # 4) next
+    bal2 = end_b
+    year += 1
 
-    df_longevity = pd.DataFrame({
-        "Year":         years_l,
-        "Start Balance": start_balances,
-        "Returns":      returns_l,
-        "Withdrawal":   withdrawals_l,
-        "End Balance":  end_balances
-    })
+df_longevity = pd.DataFrame({
+    "Year":         years_l,
+    "Start Balance": start_balances,
+    "Returns":      returns_l,
+    "Withdrawal":   withdrawals_l,
+    "End Balance":  end_balances
+})
 
-    longevity_fmt = {
-        "Year":          "{:.0f}",
-        "Start Balance": "{:,.2f}",
-        "Returns":       "{:,.2f}",
-        "Withdrawal":    "{:,.2f}",
-        "End Balance":   "{:,.2f}"
-    }
+longevity_fmt = {
+    "Year":          "{:.0f}",
+    "Start Balance": "{:,.2f}",
+    "Returns":       "{:,.2f}",
+    "Withdrawal":    "{:,.2f}",
+    "End Balance":   "{:,.2f}"
+}
 
-    st.dataframe(
-        df_longevity
-          .style
-          .format(longevity_fmt)
-          .set_properties(**{"text-align":"center"}),
-        width=800
-    )
+st.dataframe(
+    df_longevity
+        .style
+        .format(longevity_fmt)
+        .set_properties(**{"text-align":"center"}),
+    width=800
+)
 
 # — CHART: Longevity Simulation —
 df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"]
@@ -402,6 +398,10 @@ df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
     )
 
     st.altair_chart(chart, use_container_width=True)
+
+# — LEGEND —
+with st.expander("🗒 Legend (raw sheet)"):
+    st.dataframe(df_legend)
 
 
 # — FULL PDF EXPORT WITH ALL CHARTS & TABLES —
