@@ -164,9 +164,14 @@ st.markdown(f"**Years to Retirement:** {years_to_retire} yrs")
 st.write("---")
 # key metrics
 col1, col2 = st.columns(2)
-col1.metric("预测退休时资产", f"RM{savings_projection[years_to_retire]:,.0f}")
-col2.metric("Future Required at Retirement (RM)", f"{future_required:,.0f}")
+col1.metric("Projected Value at Retirement/预测退休时资产", f"RM{savings_projection[years_to_retire]:,.0f}")
+col2.metric("Future Required at Retirement/退休时需准备资金", f"RM{future_required:,.0f}")
 col3, col4 = st.columns(2)
+with col3:
+    adequacy_ratio = savings_projection[years_to_retire] / future_required
+    status = "✅ Adequacy/足够" if adequacy_ratio >= 1 else "⚠️ Deficiency/不足"
+    st.metric("Adequacy ratio/资金充足率", f"{adequacy_ratio:.0%}", status)
+
 col3.metric("First Lump Date", first_lump_date.strftime('%d %b %Y'))
 col4.metric("Monthly Invest Start", monthly_start.strftime('%d %b %Y'))
 st.write("---")
