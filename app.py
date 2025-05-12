@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from numpy_financial import pmt, fv, pv
 from datetime import date
+import altair as alt
 
 st.set_page_config(page_title="Retirement Planner", layout="wide")
 
@@ -179,13 +180,14 @@ st.write("---")
 
 # — CALCULATE REQUIRED MONTHLY SAVINGS —
 st.subheader("Required Monthly Savings to Meet Future Goal")
+st.subheader("实现未来目标所需的每月储蓄")
 net_monthly = (gross_return_rate) / 12
 months = years_to_retire * 12
 if net_monthly != 0:
     req_month = future_required * net_monthly / ((1 + net_monthly)**months - 1)
 else:
     req_month = future_required / months
-st.metric("Required Monthly Savings (RM)", f"{req_month:,.2f}")
+st.metric("Required Monthly Savings/每月所需储蓄", f"RM{req_month:,.2f}")
 st.write("---")
 
 # — SENSITIVITY TABLE —
