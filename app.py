@@ -388,16 +388,16 @@ st.dataframe(
 df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"]
 df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
 
-    chart = alt.Chart(df_longevity).mark_line(color="green").encode(
-        x=alt.X("Calendar Year:O", title="Year", axis=alt.Axis(format="d")),
-        y=alt.Y("End Balance:Q", title="End Balance (RM)")
-    ).properties(
-        title="Money Longevity Simulation",
-        width=700,
-        height=400
-    )
+chart = alt.Chart(df_longevity).mark_line(color="green").encode(
+    x=alt.X("Calendar Year:O", title="Year", axis=alt.Axis(format="d")),
+    y=alt.Y("End Balance:Q", title="End Balance (RM)")
+).properties(
+    title="Money Longevity Simulation",
+    width=700,
+    height=400
+)
 
-    st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart, use_container_width=True)
 
 # — LEGEND —
 with st.expander("🗒 Legend (raw sheet)"):
