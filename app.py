@@ -204,16 +204,16 @@ for rate in rates:
     balances = []
     bal = 0.0
     for y in df_sens['Year']:
-        current_year = start_year + y - 1
+        current_year = start_year + y 
         # lumpsums
         year_lumps = 0.0
-        if y == 1 and first_lump_date.year == start_year:
+        if y == 0 and first_lump_date.year == start_year:
             year_lumps += first_lump
         for dt, amt in zip(additional_dts, additional_amts):
             if dt.year == current_year:
                 year_lumps += amt
         # base monthly
-        if y == 1:
+        if y == 0:
             months_base = 13 - monthly_start.month
         else:
             months_base = 12
