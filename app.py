@@ -1,8 +1,15 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
 from numpy_financial import pmt, fv, pv
+
+st.set_page_config(
+    page_title="退休规划系统",
+    page_icon="💰",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 def calculate_retirement():
     st.title("退休规划计算器 💰")
