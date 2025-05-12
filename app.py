@@ -63,8 +63,8 @@ years_post = st.sidebar.number_input(
 
 
 # 计算通胀调整后的需求
-annual_need_future = monthly_expenses * 12 * (1 + inflation_rate)**years_to_retire
-future_required = -pv(real_return, years_post, annual_need_future)
+    annual_need_future = monthly_expenses * 12 * (1 + inflation_rate)**years_to_retire
+    future_required = -pv(real_return, years_post, annual_need_future)
 
 # — SIDEBAR: Pre-Retirement Investments —
 st.sidebar.header("Pre-Retirement Investments")
