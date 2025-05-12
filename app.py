@@ -51,14 +51,10 @@ def calculate_retirement():
         for year in range(retire_age, retire_age + retirement_years):
             annual_withdrawal = monthly_need * 12 * (1 + inflation)**(year - retire_age)
             assets = assets * (1 + return_rate) - annual_withdrawal
-    
-        # 创建DataFrame
-        df = pd.DataFrame({
-            "年龄": year,
-            "累计资产": savings_projection,
-            "退休需求": needs_projection
-        })
+
+
         
+       
         # 显示关键指标
         col1, col2, col3 = st.columns(3)
         with col1:
