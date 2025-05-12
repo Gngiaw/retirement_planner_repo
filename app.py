@@ -270,7 +270,9 @@ st.dataframe(styled)
 # index by Calendar Year so the x-axis shows the actual year numbers
 import altair as alt
 
-proj_chart = df_sens[["Calendar Year"] + [f"{r}%" for r in range(4, 13)]]
+existing_cols = df_sens.columns
+rate_cols = [col for col in [f"{r}%" for r in range(4, 13)] if col in existing_cols]
+proj_chart = df_sens[["Calendar Year"] + rate_cols]
 proj_chart_melted = proj_chart.melt(id_vars="Calendar Year", var_name="Return Rate", value_name="Balance")
 
 chart = alt.Chart(proj_chart_melted).mark_line().encode(
