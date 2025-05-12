@@ -27,40 +27,40 @@ def calculate_retirement():
         st.error("错误：退休年龄必须大于当前年龄")
         return
     try:
-    years_to_retire = retire_age - current_age
+        years_to_retire = retire_age - current_age
     
     # 生成年份列表（新增）
-    years = list(range(current_age, retire_age + retirement_years + 1))  # 包含退休后期
+        years = list(range(current_age, retire_age + retirement_years + 1))  # 包含退休后期
     
     # 初始化预测数组
-    savings_projection = []
-    needs_projection = []
+        savings_projection = []
+        needs_projection = []
     
     # 阶段一：储蓄期（退休前）
-    for year in range(years_to_retire + 1):
-        future_savings = fv(return_rate, year, -monthly_save*12, -current_savings)
-        savings_projection.append(future_savings)
-        needs_projection.append(0)  # 退休前无需求
+        for year in range(years_to_retire + 1):
+            future_savings = fv(return_rate, year, -monthly_save*12, -current_savings)
+            savings_projection.append(future_savings)
+            needs_projection.append(0)  # 退休前无需求
 
     # 阶段二：退休期
-    remaining_years = retirement_years
-    current_assets = savings_projection[-1]
-    for year in range(1, retirement_years + 1):
-        annual_withdrawal = monthly_need * 12 * (1 + inflation)**year
-        current_assets = current_assets * (1 + return_rate) - annual_withdrawal
-        savings_projection.append(current_assets)
-        needs_projection.append(annual_withdrawal)
+        remaining_years = retirement_years
+        current_assets = savings_projection[-1]
+        for year in range(1, retirement_years + 1):
+            annual_withdrawal = monthly_need * 12 * (1 + inflation)**year
+            current_assets = current_assets * (1 + return_rate) - annual_withdrawal
+            savings_projection.append(current_assets)
+            needs_projection.append(annual_withdrawal)
 
     # 创建DataFrame
-    df = pd.DataFrame({
-        "年龄": years,
-        "累计资产": savings_projection,
-        "退休需求": needs_projection
-    })
+        df = pd.DataFrame({
+            "年龄": years,
+            "累计资产": savings_projection,
+            "退休需求": needs_projection
+        })
 
-except Exception as e:
-    st.error(f"计算错误：{str(e)}")
-    return
+    except Exception as e:
+        st.error(f"计算错误：{str(e)}")
+        return
        
         # 显示关键指标
         col1, col2, col3 = st.columns(3)
