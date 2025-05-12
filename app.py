@@ -257,7 +257,7 @@ for rate in rates:
             total += amount * (1 + real_rate)
 
         balances.append(total)
-    df_sens[f"{int(real_rate * 100)}%"] = balances
+    df_sens[f"{int(rate * 100)}%"] = balances
 
 # Format nicely
 # format Year, Age, Calendar Year as integers and rates as 2-decimal floats
