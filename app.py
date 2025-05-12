@@ -203,6 +203,7 @@ df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
 
 for rate in rates:
+    net_annual = rate - inflation_rate
     balances = []
     balance = 0.0
     for i, row in df_sens.iterrows():
@@ -239,7 +240,7 @@ for rate in rates:
             principal += months_add * mamt
 
         # === Apply Annual Interest AFTER All Inflows ===
-        balance = principal * (1 + rate)
+        balance = principal * (1 + net_annual)
         balances.append(balance)
 
     df_sens[f"{int(rate * 100)}%"] = balances
