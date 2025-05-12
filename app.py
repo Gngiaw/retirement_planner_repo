@@ -6,8 +6,9 @@ from datetime import date
 
 st.set_page_config(page_title="Retirement Planner", layout="wide")
 
-st.title("📊 Welcome to Your Retirement & Investment Planner")
+st.title("📊 Welcome to Your Retirement & Investment Planner/欢迎来到您的退休和投资规划")
 st.markdown("This personalized tool helps you **project your future** and plan **financial freedom** with confidence.")
+st.markdown("这个个性化工具可以帮助您**规划未来**并自信地规划**财务自由**。")
 st.image(
     "https://providencefinancialinc.com/wp-content/uploads/2012/11/bigstock-Retirement-Ahead-8148597.jpg",
     caption="Plan your retirement with peace of mind",
@@ -166,7 +167,7 @@ st.markdown(f"**Expected Inflation Rate/预期年通胀率:** {inflation_rate:.1
 
 st.write("---")
 # key metrics
-col1, col2 = st.columns(3)
+col1, col2, col3 = st.columns(3)
 col1.metric("Projected Value at Retirement/预测退休时资产", f"RM{savings_projection[years_to_retire]:,.0f}")
 col2.metric("Future Required at Retirement/退休时需准备资金", f"RM{future_required:,.0f}")
 with col3:
