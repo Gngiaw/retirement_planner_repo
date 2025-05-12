@@ -20,19 +20,19 @@ phase1_tab, phase2_tab, phase3_tab = st.tabs(["🧓 Retirement Calculator", "�
 
 # — SIDEBAR: Investor Details —
 with phase1_tab:
-st.sidebar.header("Investor Details")
-name = st.sidebar.text_input("Name", value="")
-dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
-contact = st.sidebar.text_input("Contact")
+    st.sidebar.header("Investor Details")
+    name = st.sidebar.text_input("Name", value="")
+    dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
+    contact = st.sidebar.text_input("Contact")
 
 # compute ages
-today = date.today()
-current_age = today.year - dob.year
-ret_age = st.sidebar.number_input(
-    "Retirement Age (years old)",
-    value=current_age + 10, min_value=current_age, step=1
+    today = date.today()
+    current_age = today.year - dob.year
+    ret_age = st.sidebar.number_input(
+        "Retirement Age (years old)",
+        value=current_age + 10, min_value=current_age, step=1
 )
-years_to_retire = ret_age - current_age
+    years_to_retire = ret_age - current_age
 
 # — SIDEBAR: Calculator Settings —
 st.sidebar.header("Calculator Settings")
