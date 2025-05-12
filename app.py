@@ -195,7 +195,7 @@ st.subheader("Projected Balance by Net Return Rates")
 rates = np.arange(0.04, 0.13, 0.01)
 start_year = first_lump_date.year
 
-df_sens = pd.DataFrame({'Year': np.arange(1, years_to_retire+1)})
+df_sens = pd.DataFrame({'Year': np.arange(0, years_to_retire)})
 # Add Age and Calendar Year columns
 df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
