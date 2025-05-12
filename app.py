@@ -16,9 +16,10 @@ st.image(
     use_container_width=True
 )
 
-
+phase1_tab, phase2_tab, phase3_tab = st.tabs(["🧓 Retirement Calculator", "📈 Investment Projection","How Long Will Your Money Last?"])
 
 # — SIDEBAR: Investor Details —
+with phase1_tab:
 st.sidebar.header("Investor Details")
 name = st.sidebar.text_input("Name", value="")
 dob = st.sidebar.date_input("Date of Birth", min_value=date(1950, 1, 1), max_value=date.today())
@@ -190,6 +191,8 @@ else:
 st.metric("Required Monthly Savings/每月所需储蓄", f"RM{req_month:,.2f}")
 st.write("---")
 
+
+with phase2_tab:
 # — SENSITIVITY TABLE —
 st.subheader("Projected Balance by Net Return Rates")
 rates = np.arange(0.04, 0.13, 0.01)
@@ -331,7 +334,10 @@ chart = alt.Chart(df_disp).mark_line(color="red").encode(
 
 st.altair_chart(chart, use_container_width=True)
 
+
 # — HOW LONG WILL YOUR MONEY LAST? —
+
+with phase3_tab:
 st.subheader("How Long Will Your Money Last?")
 start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], [], []
 
