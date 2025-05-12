@@ -191,12 +191,11 @@ else:
 st.metric("Required Monthly Savings/每月所需储蓄", f"RM{req_month:,.2f}")
 st.write("---")
 
-
-with phase2_tab:
 # — SENSITIVITY TABLE —
-st.subheader("Projected Balance by Net Return Rates")
-rates = np.arange(0.04, 0.13, 0.01)
-start_year = first_lump_date.year
+with phase2_tab:
+    st.subheader("Projected Balance by Net Return Rates")
+    rates = np.arange(0.04, 0.13, 0.01)
+    start_year = first_lump_date.year
 
 df_sens = pd.DataFrame({'Year': np.arange(1, years_to_retire+1)})
 # Add Age and Calendar Year columns
@@ -338,8 +337,8 @@ st.altair_chart(chart, use_container_width=True)
 # — HOW LONG WILL YOUR MONEY LAST? —
 
 with phase3_tab:
-st.subheader("How Long Will Your Money Last?")
-start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], [], []
+    st.subheader("How Long Will Your Money Last?")
+    start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], [], []
 
 bal2 = manual_start
 net_ret = gross_growrate - gross_irate
