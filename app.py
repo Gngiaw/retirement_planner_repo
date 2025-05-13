@@ -51,8 +51,13 @@ real_return = (1 + gross_return_rate) / (1 + inflation_rate) - 1
 
 # — SIDEBAR: Post-Retirement Planning —
 st.sidebar.header("Post-Retirement Planning")
-monthly_expenses = st.sidebar.number_input("Desired Monthly Income after Retirement (RM)", min_value=0, value=5000, format="%d)
-
+monthly_expenses = st.sidebar.number_input(
+    "Desired Monthly Income after Retirement (RM)",
+    min_value=0,
+    value=5000,
+    step=1,
+    format="%d"
+)
 years_post = st.sidebar.number_input(
     "Years to Live After Retirement", value=20, min_value=1, step=1
 )
