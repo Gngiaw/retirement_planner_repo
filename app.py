@@ -239,7 +239,6 @@ for dt, amt in zip(additional_dts, additional_amts):
 
 # Final logic to build balances for each rate
 for rate in rates:
-    rate = real_return
     balances = []
     for year in df_sens['Calendar Year']:
         total = 0.0
