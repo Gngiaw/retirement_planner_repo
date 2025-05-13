@@ -441,8 +441,8 @@ st.dataframe(
 )
 
 # — CHART: Longevity Simulation —
-df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"] - 1
-df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"] - 1
+df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"]
+df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
 
 chart = alt.Chart(df_longevity).mark_line(color="green").encode(
     x=alt.X("Year:O", title="Year", axis=alt.Axis(format="d")),
@@ -524,7 +524,7 @@ if st.button("Download All Charts & Tables as PDF"):
         f"<b>DOB</b>: {dob.strftime('%d %b %Y')}   <b>Age</b>: {current_age}",
         f"<b>Retirement Age</b>: {ret_age},   <b>Years to Retire</b>: {years_to_retire}",
         f"<b>Expected Return Rate</b>: {gross_pct:.1f}%   <b>Inflation Rate</b>: {inflation_pct:.1f}%",
-        f"<b>Experted Assume Years to Live After Retirement</b>: {years_post}",
+        f"<b>Assume Years to Live After Retirement</b>: {years_post}",
         f"<b>Experted Monthly Income after Retirement (RM)</b>: {monthly_expenses:,.0f}",
         f"<b>Total Required at Retirement (RM)</b>: {future_required:,.0f}",
         f"<b>Required Monthly Savings to Meet The Goal (RM)</b>: {req_month:,.0f}"       
