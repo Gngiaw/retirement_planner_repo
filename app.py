@@ -121,7 +121,7 @@ for j in range(int(num_add_month)):
 st.sidebar.header("Money Longevity Test")
 manual_start = st.sidebar.number_input(
     "Starting Capital (RM)",
-    value=float(future_required),
+    value=int(future_required),
     step=1000,
     format="%d"
 )
