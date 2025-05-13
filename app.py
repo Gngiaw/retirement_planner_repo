@@ -239,34 +239,32 @@ for dt, amt in zip(additional_dts, additional_amts):
     if amt > 0:
         lumps.append((dt, amt))
 
-# Final month index for maturity value
-months_total = years_to_retire * 12
 
-# Final logic to build balances for each rate
+# Initialize balance for each rate
 for rate in rates:
     balances = []
-    for y in range(years_to_retire + 1):
-        year = start_year + y
-        total = 0.0
+    balance = 0.0  # start from zero
+    for year in df_sens['Calendar Year']:
+        # sum of monthly investment for this year
+        year_monthly_total = sum(
+            amount for date, amount in monthly_cashflow if date.year == year
+        )
 
-        # Monthly investments
-        for date, amount in monthly_contribs:
-            if date.year > year:
-                continue
-            months_left = (end_year - date.year) * 12 + (12 - date.month)
-            if months_left > 0:
-                total += fv(rate / 12, months_left, 0, -amount)
+        # sum of lump sums in this year
+        year_lump_total = sum(
+            amount for date, amount in lumps if date.year == year
+        )
 
-        # Lump sums
-        for date, amount in lumps:
-            if date.year > year:
-                continue
-            months_left = (end_year - date.year) * 12 + (12 - date.month)
-            if months_left > 0:
-                total += fv(rate / 12, months_left, 0, -amount)
+        # add to balance BEFORE compounding
+        balance += year_monthly_total + year_lump_total
 
-        balances.append(total)
-    df_sens[f"{int(rate*100)}%"] = balances
+        # apply 1 year compound growth
+        balance *= (1 + rate)
+
+        # store result
+        balances.append(balance)
+    
+    df_sens[f\"{int(rate * 100)}%\"] = balances
 
 # Format and display
 fmt = {col: "{:,.2f}" for col in df_sens.columns if col.endswith('%')}
