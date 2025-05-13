@@ -383,11 +383,11 @@ while bal2 > 0 and year <= max_years:
     start_balances.append(bal2)
     
     # 1) earn return
-    r = bal2 * net_ret
+    r = bal2 * gross_growrate
     returns_l.append(r)
     
     # 2) withdraw
-    w = manual_withdraw * ((1 + gross_irate) ** (years_to_retire))
+    w = manual_withdraw * ((1 + inflation_rate) ** year)
     withdrawals_l.append(w)
     
     # 3) new ending balance
