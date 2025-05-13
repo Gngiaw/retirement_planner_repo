@@ -120,6 +120,10 @@ manual_start = st.sidebar.number_input(
     step=1000.0,
     format="%.2f"
 )
+manual_start_year = st.sidebar.number_input(
+    "Manual Start Year", value=today.year, min_value=1950, max_value=2100, step=1
+)
+
 manual_withdraw = st.sidebar.number_input(
     "Annual Withdrawal (RM)",
     value=float(monthly_expenses * 12),
@@ -387,9 +391,9 @@ while bal2 > 0 and year <= max_years:
     returns_l.append(r)
     
     # 2) withdraw
-    w = manual_withdraw * ((1 + inflation_rate) ** year)
-    withdrawals_l.append(w)
-    
+    inflation_years = manual_start_year - today.year + year
+    w = manual_withdraw * ((1 + inflation_rate) ** inflation_years)
+
     # 3) new ending balance
     end_b = bal2 + r - w
     end_balances.append(end_b)
