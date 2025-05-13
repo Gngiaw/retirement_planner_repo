@@ -450,9 +450,6 @@ chart = alt.Chart(df_longevity).mark_line(color="green").encode(
 
 st.altair_chart(chart, use_container_width=True)
 
-# — LEGEND —
-with st.expander("🗒 Legend (raw sheet)"):
-    st.dataframe(df_legend)
 
 
 # — FULL PDF EXPORT WITH ALL CHARTS & TABLES —
