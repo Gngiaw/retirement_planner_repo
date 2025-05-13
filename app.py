@@ -237,30 +237,24 @@ for dt, amt in zip(additional_dts, additional_amts):
     if amt > 0:
         lumps.append((dt, amt))
 
-# Final logic to build balances for each rate
+# Final month index for maturity value
+months_total = years_to_retire * 12
+
+# Build balances for each rate
 for rate in rates:
-    real_rate = (1 + rate) / (1 + inflation_rate) - 1
-
-for year in df_sens['Calendar Year']:
-    total = 0.0
-    year_end = datetime(year, 12, 31).date()
-
-    for date, amount in monthly_cashflow:
-        if date > year_end:
-            continue  # Skip payments after this year
-
-        # Count how many months this amount gets compounded before year ends
-        months_left = (year_end.year - date.year) * 12 + (12 - date.month)
-        if months_left > 0:
-            total += fv(rate/12, months_left, 0, -amount)
-
-        for date, amount in lumps:
-            if date.year > year - 1:  # lump must be in prior year to count
+    balances = []
+    for y in range(years_to_retire + 1):
+        year = start_year + y
+        total = 0.0
+        for date, amount in monthly_contribs:
+            if date.year > year:
                 continue
-            total += amount * (1 + real_rate)
-
+            months_to_maturity = months_total - ((date.year - start_year) * 12 + (date.month - 1))
+            if months_to_maturity <= 0:
+                continue
+            total += fv(rate / 12, months_to_maturity, 0, -amount)
         balances.append(total)
-    df_sens[f"{int(rate * 100)}%"] = balances
+    df_sens[f"{int(rate*100)}%"] = balances
 
 # Format nicely
 # format Year, Age, Calendar Year as integers and rates as 2-decimal floats
