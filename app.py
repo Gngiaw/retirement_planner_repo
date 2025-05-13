@@ -392,7 +392,7 @@ while bal2 > 0 and year <= max_years:
     returns_l.append(r)
     
     # 2) withdraw
-    inflation_years = manual_start_year - today.year + year
+    
     if year == 1:
         w = base_withdraw
     else:
