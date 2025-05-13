@@ -380,20 +380,21 @@ start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], []
 
 bal2 = manual_start
 net_ret = gross_growrate - gross_irate
+
 # Withdrawal Inflation Adjustment
 inflation_years = manual_start_year - today.year - 1
-adjusted_withdraw = manual_withdraw * ((1 + gross_irate) ** (manual_start_year - today.year))
+adjusted_withdraw = manual_withdraw * ((1 + gross_irate) ** inflation_years)
 
-for year in range(1, max_years + 1):
-    
+year = 1
+
 while bal2 > 0 and year <= max_years:
     years_l.append(year)
     start_balances.append(bal2)
-    
+
     # 1) earn return
     r = bal2 * gross_growrate
     returns_l.append(r)
-    
+
     # 2) withdraw
     if year == 1:
         w = adjusted_withdraw
@@ -401,21 +402,21 @@ while bal2 > 0 and year <= max_years:
         w = withdrawals_l[-1] * (1 + gross_irate)
 
     withdrawals_l.append(w)
-    
+
     # 3) new ending balance
     end_b = bal2 + r - w
     end_balances.append(end_b)
-    
+
     # 4) next
     bal2 = end_b
     year += 1
 
 df_longevity = pd.DataFrame({
-    "Year":         years_l,
+    "Year":          years_l,
     "Start Balance": start_balances,
-    "Returns":      returns_l,
-    "Withdrawal":   withdrawals_l,
-    "End Balance":  end_balances
+    "Returns":       returns_l,
+    "Withdrawal":    withdrawals_l,
+    "End Balance":   end_balances
 })
 
 longevity_fmt = {
