@@ -251,11 +251,12 @@ for rate in rates:
             total += fv(rate/12, months_left, 0, -amount)
 
         for date, amount in lumps:
-            if date.year > year - 1:  # lump must be in prior year to count
+            if date.year > year:  # lump must be in prior year to count
                 continue
             months_left = (end_year - date.year) * 12 + (12 - date.month)
-            if months_left > 0:
-                total += fv(rate / 12, months_left, 0, -amount)
+            if months_left <= 0:
+                continue
+            total += fv(rate / 12, months_left, 0, -amount)
                 
         balances.append(total)
     df_sens[f"{int(rate * 100)}%"] = balances
