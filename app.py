@@ -247,7 +247,7 @@ for rate in rates:
     for year in df_sens['Calendar Year']:
         # sum of monthly investment for this year
         year_monthly_total = sum(
-            amount for date, amount in monthly_cashflow if date.year == year
+            amount for date, amount in monthly_contribs if date.year == year
         )
 
         # sum of lump sums in this year
