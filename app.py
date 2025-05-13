@@ -381,11 +381,10 @@ start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], []
 bal2 = manual_start
 net_ret = gross_growrate - gross_irate
 # Withdrawal Inflation Adjustment
-inflation_years = manual_start_year - today.year
+inflation_years = manual_start_year - today.year - 1
 adjusted_withdraw = manual_withdraw * ((1 + gross_irate) ** (manual_start_year - today.year))
 
 for year in range(1, max_years + 1):
-year = 1 
 while bal2 > 0 and year <= max_years:
     years_l.append(year)
     start_balances.append(bal2)
