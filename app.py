@@ -385,7 +385,7 @@ inflation_years = manual_start_year - today.year
 adjusted_withdraw = manual_withdraw * ((1 + gross_irate) ** (manual_start_year - today.year))
 
 for year in range(1, max_years + 1):
-
+year = 1 
 while bal2 > 0 and year <= max_years:
     years_l.append(year)
     start_balances.append(bal2)
