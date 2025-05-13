@@ -259,7 +259,7 @@ for rate in rates:
         balance += year_monthly_total + year_lump_total
 
         # apply 1 year compound growth
-        balance *= fv(1 + rate)
+        balance = fv(rate,1 + year, )
 
         # store result
         balances.append(balance)
