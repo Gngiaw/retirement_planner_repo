@@ -300,6 +300,7 @@ st.subheader("Disposal of Invested Capital")
 start_balance   = future_required
 annual_withdraw = monthly_expenses * 12
 net_annual      = gross_return_rate - inflation_rate
+base_withdraw   = annual_withdraw * ((1 + inflation_rate) ** years_to_retire)
 Retirement_age  = ret_age
 Retirement_year = today.year + years_to_retire
 
@@ -313,7 +314,7 @@ for y in range(1, int(years_post) + 1):
     ret = bal * gross_return_rate
     returns.append(ret)
 
-    wd = annual_withdraw * ((1 + inflation_rate) ** y)
+    wd = base_withdraw * ((1 + inflation_rate) ** (y - 1))
     withdraws.append(wd)
 
     end_bal = bal + ret - wd
