@@ -131,7 +131,7 @@ manual_start_year = st.sidebar.number_input(
 
 manual_withdraw = st.sidebar.number_input(
     "Annual Withdrawal (RM)",
-    value=float(monthly_expenses * 12),
+    value=int(monthly_expenses * 12),
     step=1000,
     format="%d"
 )
@@ -441,7 +441,7 @@ st.dataframe(
 )
 
 # — CHART: Longevity Simulation —
-df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"]
+df_longevity["Year"] = today.year + years_to_retire + df_longevity["Year"]
 df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
 
 chart = alt.Chart(df_longevity).mark_line(color="green").encode(
