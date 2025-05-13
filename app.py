@@ -380,6 +380,7 @@ start_balances, returns_l, withdrawals_l, end_balances, years_l = [], [], [], []
 
 bal2 = manual_start
 net_ret = gross_growrate - gross_irate
+base_withdraw = manual_withdraw * ((1 + gross_irate) ** (manual_start_year - today.year))
 year = 1
 
 while bal2 > 0 and year <= max_years:
@@ -392,7 +393,7 @@ while bal2 > 0 and year <= max_years:
     
     # 2) withdraw
     inflation_years = manual_start_year - today.year + year
-    w = manual_withdraw * ((1 + inflation_rate) ** inflation_years)
+    w = base_withdraw * ((1 + gross_irate) ** (year - 1))
     withdrawals_l.append(w)
     
     # 3) new ending balance
