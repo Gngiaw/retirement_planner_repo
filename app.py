@@ -393,7 +393,8 @@ while bal2 > 0 and year <= max_years:
     # 2) withdraw
     inflation_years = manual_start_year - today.year + year
     w = manual_withdraw * ((1 + inflation_rate) ** inflation_years)
-
+    withdrawals_l.append(w)
+    
     # 3) new ending balance
     end_b = bal2 + r - w
     end_balances.append(end_b)
