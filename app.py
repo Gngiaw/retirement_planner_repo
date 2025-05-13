@@ -313,7 +313,7 @@ for y in range(1, int(years_post) + 1):
     ret = bal * gross_return_rate
     returns.append(ret)
 
-    wd = annual_withdraw * ((1 + inflation_rate) ** (years))
+    wd = annual_withdraw * ((1 + inflation_rate) ** y)
     withdraws.append(wd)
 
     end_bal = bal + ret - wd
