@@ -166,7 +166,7 @@ st.markdown(f"**Name/姓名:** {name}")
 st.markdown(f"**DOB/出生日期:** {dob.strftime('%d %b %Y')}  **Age:** {current_age} yrs")
 st.markdown(f"**Contact/联系:** {contact}")
 st.markdown(f"**Years to Retirement/距离退休几年:** {years_to_retire} yrs")
-st.markdown(f"**Experted Years to Live After Retirement/退休后生活年数:** {years_post} yrs")
+st.markdown(f"**Assume Years to Live After Retirement/退休后生活年数:** {years_post} yrs")
 st.markdown(f"**Desired Monthly Income after Retirement/退休后每月需求:** RM{monthly_expenses}")
 st.markdown(f"**Expected Gross Return Rate/预期年回报率:** {gross_return_rate:.1%}")
 st.markdown(f"**Expected Inflation Rate/预期年通胀率:** {inflation_rate:.1%}")
@@ -512,16 +512,17 @@ if st.button("Download All Charts & Tables as PDF"):
     story = []
 
     # Investor Info
-    story.append(Paragraph("<b>Retirement & Investment Full Report</b>", styles["Title"]))
+    story.append(Paragraph("<b>📊 Welcome to Your Retirement & Investment Planner 欢迎来到您的退休和投资规划</b>", styles["Title"]))
     story.append(Spacer(6, 32))
     info = [
-        f"<b>Name</b>: {title} {name}",
-        f"<b>DOB</b>: {dob.strftime('%d %b %Y')}   <b>Age</b>: {current_age}",
-        f"<b>Retirement Age</b>: {ret_age},   <b>Years to Retire</b>: {years_to_retire}",
-        f"<b>Expected Return Rate</b>: {gross_pct:.1f}%   <b>Inflation Rate</b>: {inflation_pct:.1f}%",
-        f"<b>Experted Monthly Income after Retirement (RM)</b>: {monthly_expenses:,.0f}",
-        f"<b>Total Required at Retirement (RM)</b>: {future_required:,.0f}",
-        f"<b>Required Monthly Savings to Meet The Goal (RM)</b>: {req_month:,.0f}"       
+        f"<b>Name/姓名</b>: {name}",
+        f"<b>DOB/出生日期</b>: {dob.strftime('%d %b %Y')}   <b>Age</b>: {current_age}",
+        f"<b>Retirement Age/退休年龄</b>: {ret_age},   <b>Years to Retire/距离退休几年</b>: {years_to_retire}",
+        f"<b>Expected Return Rate/预期年回报率</b>: {gross_pct:.1f}%   <b>Inflation Rate/预期年通胀率</b>: {inflation_pct:.1f}%",
+        f"<b>Experted Assume Years to Live After Retirement/退休后生活年数</b>: {years_post}",
+        f"<b>Experted Monthly Income after Retirement/退休后每月需求 (RM)</b>: {monthly_expenses:,.0f}",
+        f"<b>Total Required at Retirement/退休时需准备资金 (RM)</b>: {future_required:,.0f}",
+        f"<b>Required Monthly Savings to Meet The Goal/实现未来目标所需的每月储蓄 (RM)</b>: {req_month:,.0f}"       
    ]
     for line in info:
         story.append(Paragraph(line, styles["Normal"]))
