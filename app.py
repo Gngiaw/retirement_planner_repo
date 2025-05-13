@@ -245,7 +245,7 @@ for rate in rates:
         for date, amount in monthly_cashflow:
             if date.year > year:
                 continue
-            months_left = (year - date.year) * 12 + (12 - date.month)
+            months_left = (end_year - date.year) * 12 + (12 - date.month)
             if months_left <= 0:
                 continue
             total += fv(rate/12, months_left, 0, -amount)
