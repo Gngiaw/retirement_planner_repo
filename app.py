@@ -239,6 +239,7 @@ for dt, amt in zip(additional_dts, additional_amts):
 
 # Final logic to build balances for each rate
 for rate in rates:
+    net_rate: rate - inflation_rate
     balances = []
     for year in df_sens['Calendar Year']:
         total = 0.0
@@ -248,7 +249,7 @@ for rate in rates:
             months_left = (end_year - date.year) * 12 + (12 - date.month)
             if months_left <= 0:
                 continue
-            total += fv(rate/12, months_left, 0, -amount)
+            total += fv(net_rate/12, months_left, 0, -amount)
 
         for date, amount in lumps:
             if date.year > year - 1:  # lump must be in prior year to count
