@@ -16,7 +16,14 @@ st.image(
     caption="Plan your retirement with peace of mind",
     use_container_width=True
 )
+# Password gate
+password = st.text_input("Enter access password:", type="password")
+if password != "Rplan888$~":
+    st.warning("Unauthorized. Please enter the correct password.")
+    st.stop()
 
+st.success("Access granted.")
+st.write("---")
 
 # — SIDEBAR: Investor Details —
 
