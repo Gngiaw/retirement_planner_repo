@@ -264,7 +264,7 @@ for rate in rates:
         # store result
         balances.append(balance)
     
-    df_sens[f\"{int(rate * 100)}%\"] = balances
+     df_sens[f"{int(rate * 100)}%"] = balances
 
 # Format and display
 fmt = {col: "{:,.2f}" for col in df_sens.columns if col.endswith('%')}
