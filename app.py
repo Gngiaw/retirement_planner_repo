@@ -259,7 +259,7 @@ for rate in rates:
         balance += year_monthly_total + year_lump_total
 
         # apply 1 year compound growth
-        balance = (1 + rate)
+        balance *= (1 + rate)
 
         # store result
         balances.append(balance)
@@ -310,10 +310,10 @@ for y in range(1, int(years_post) + 1):
     years.append(y)
     starts.append(bal)
 
-    ret = bal * net_annual
+    ret = bal * gross_return_rate
     returns.append(ret)
 
-    wd = annual_withdraw * ((1 + inflation_rate) ** (years_to_retire))
+    wd = annual_withdraw * ((1 + inflation_rate) ** (years))
     withdraws.append(wd)
 
     end_bal = bal + ret - wd
