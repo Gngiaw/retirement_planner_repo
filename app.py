@@ -192,26 +192,28 @@ st.metric("Required Monthly Savings/每月所需储蓄", f"RM{req_month:,.2f}")
 st.write("---")
 
 # — SENSITIVITY TABLE —
+
+# --- Streamlit UI Header ---
 st.subheader("Projected Balance by Net Return Rates")
 
-rates = np.arange(0.04, 0.13, 0.01)
+# --- Parameters (these would normally come from sidebar inputs) ---
+rates = np.arange(0.04, 0.13, 0.01)  # 4% to 12%
 start_year = today.year
 end_year = start_year + years_to_retire
 
-# Build base dataframe
-df_sens = pd.DataFrame({'Year': np.arange(0, years_to_retire+1)})
+# Create base dataframe for output
+df_sens = pd.DataFrame({'Year': np.arange(0, years_to_retire + 1)})
 df_sens['Age'] = current_age + df_sens['Year']
 df_sens['Calendar Year'] = today.year + df_sens['Year']
 
-# Helper: generate list of all monthly investments (date + amount)
-monthly_cashflow = []
+# Build list of monthly investments: (date, amount)
+monthly_contribs = []
 
 # Base monthly investment
 if monthly_invest > 0:
     current = monthly_start
     while current <= datetime(end_year, 12, 1).date():
-        monthly_cashflow.append((current, monthly_invest))
-        # next month
+        monthly_contribs.append((current, monthly_invest))
         if current.month == 12:
             current = current.replace(year=current.year + 1, month=1)
         else:
@@ -223,7 +225,7 @@ for mdt, mamt in zip(additional_month_dts, additional_month_amts):
         continue
     current = mdt
     while current <= datetime(end_year, 12, 1).date():
-        monthly_cashflow.append((current, mamt))
+        monthly_contribs.append((current, mamt))
         if current.month == 12:
             current = current.replace(year=current.year + 1, month=1)
         else:
@@ -237,36 +239,41 @@ for dt, amt in zip(additional_dts, additional_amts):
     if amt > 0:
         lumps.append((dt, amt))
 
+# Final month index for maturity value
+months_total = years_to_retire * 12
+
 # Final logic to build balances for each rate
 for rate in rates:
     balances = []
-    for year in df_sens['Calendar Year']:
+    for y in range(years_to_retire + 1):
+        year = start_year + y
         total = 0.0
-        for date, amount in monthly_cashflow:
-            if date.year > year:
-                continue
-            months_left = (end_year - date.year) * 12 + (12 - date.month)
-            if months_left <= 0:
-                continue
-            total += fv(rate/12, months_left, 0, -amount)
 
-        for date, amount in lumps:
-            if date.year > year:  # lump must be in prior year to count
+        # Monthly investments
+        for date, amount in monthly_contribs:
+            if date.year > year:
                 continue
             months_left = (end_year - date.year) * 12 + (12 - date.month)
             if months_left > 0:
                 total += fv(rate / 12, months_left, 0, -amount)
 
-                
-        balances.append(total)
-    df_sens[f"{int(rate * 100)}%"] = balances
+        # Lump sums
+        for date, amount in lumps:
+            if date.year > year:
+                continue
+            months_left = (end_year - date.year) * 12 + (12 - date.month)
+            if months_left > 0:
+                total += fv(rate / 12, months_left, 0, -amount)
 
-# Format nicely
-# format Year, Age, Calendar Year as integers and rates as 2-decimal floats
-fmt = {col: "{:.2f}" for col in df_sens.columns if col.endswith('%')}
-fmt.update({"Year":"{:.0f}", "Age":"{:.0f}", "Calendar Year":"{:.0f}"})
-styled = df_sens.style.format(fmt).set_properties(**{'text-align':'center'})
-st.dataframe(styled) 
+        balances.append(total)
+    df_sens[f"{int(rate*100)}%"] = balances
+
+# Format and display
+fmt = {col: "{:,.2f}" for col in df_sens.columns if col.endswith('%')}
+fmt.update({"Year": "{:.0f}", "Age": "{:.0f}", "Calendar Year": "{:.0f}"})
+styled = df_sens.style.format(fmt).set_properties(**{'text-align': 'center'})
+st.dataframe(styled)
+
 
 # — CHART: Projected Balance by Net Return Rates —
 # index by Calendar Year so the x-axis shows the actual year numbers
