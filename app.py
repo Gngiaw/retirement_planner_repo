@@ -441,8 +441,8 @@ st.dataframe(
 )
 
 # — CHART: Longevity Simulation —
-df_longevity["Year"] = today.year + years_to_retire + df_longevity["Year"]
-df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"]
+df_longevity["Calendar Year"] = today.year + years_to_retire + df_longevity["Year"] - 1
+df_longevity["Age"] = current_age + years_to_retire + df_longevity["Year"] - 1
 
 chart = alt.Chart(df_longevity).mark_line(color="green").encode(
     x=alt.X("Year:O", title="Year", axis=alt.Axis(format="d")),
