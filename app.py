@@ -51,7 +51,7 @@ real_return = (1 + gross_return_rate) / (1 + inflation_rate) - 1
 
 # — SIDEBAR: Post-Retirement Planning —
 st.sidebar.header("Post-Retirement Planning")
-monthly_expenses = st.sidebar.number_input("Desired Monthly Income after Retirement (RM)", min_value=0.0, value=5000.0, format="%.0f)
+monthly_expenses = st.sidebar.number_input("Desired Monthly Income after Retirement (RM)", min_value=0, value=5000, format="%d)
 
 years_post = st.sidebar.number_input(
     "Years to Live After Retirement", value=20, min_value=1, step=1
@@ -65,7 +65,7 @@ future_required = -pv(real_return, years_post, annual_need_future)
 # — SIDEBAR: Pre-Retirement Investments —
 st.sidebar.header("Pre-Retirement Investments")
 first_lump = st.sidebar.number_input(
-    "First Lump Sum Amount (RM)", value=0.0, step=100.0, format="%.0f"
+    "First Lump Sum Amount (RM)", value=0, step=100, format="%d"
 )
 first_lump_date = st.sidebar.date_input(
     "Date of First Lump Sum", value=today, min_value=today
@@ -79,7 +79,7 @@ additional_dts = []
 for i in range(int(num_additional)):
     amt = st.sidebar.number_input(
         f"Additional Lump Sum #{i+2} Amount (RM)",
-        value=0.0, step=100.0, format="%.0f", key=f"add_amt_{i}"
+        value=0, step=100, format="%d", key=f"add_amt_{i}"
     )
     dt = st.sidebar.date_input(
         f"Date of Additional Lump Sum #{i+2}",
@@ -89,7 +89,7 @@ for i in range(int(num_additional)):
     additional_dts.append(dt)
 
 monthly_invest = st.sidebar.number_input(
-    "Monthly Invest Amount (RM)", value=0.0, step=100.0, format="%.0f"
+    "Monthly Invest Amount (RM)", value=0, step=100, format="%d"
 )
 monthly_start = st.sidebar.date_input(
     "Monthly Invest Start Date", value=today, min_value=today
@@ -103,7 +103,7 @@ additional_month_dts = []
 for j in range(int(num_add_month)):
     m_amt = st.sidebar.number_input(
         f"Additional Monthly Invest #{j+1} Amount (RM)",
-        value=0.0, step=100.0, format="%.0f", key=f"add_mon_amt_{j}"
+        value=0, step=100, format="%d", key=f"add_mon_amt_{j}"
     )
     m_dt = st.sidebar.date_input(
         f"Date of Additional Monthly Invest #{j+1}",
@@ -117,8 +117,8 @@ st.sidebar.header("Money Longevity Test")
 manual_start = st.sidebar.number_input(
     "Starting Capital (RM)",
     value=float(future_required),
-    step=1000.0,
-    format="%.0f"
+    step=1000,
+    format="%d"
 )
 manual_start_year = st.sidebar.number_input(
     "Manual Start Year", value=today.year, min_value=1950, max_value=2100, step=1
@@ -127,8 +127,8 @@ manual_start_year = st.sidebar.number_input(
 manual_withdraw = st.sidebar.number_input(
     "Annual Withdrawal (RM)",
     value=float(monthly_expenses * 12),
-    step=1000.0,
-    format="%.0f"
+    step=1000,
+    format="%d"
 )
 manual_pct = st.sidebar.number_input(
     "Annual Gross Return Rate (%)",
