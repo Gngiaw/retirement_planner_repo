@@ -246,7 +246,7 @@ for rate in rates:
     for y in range(years_to_retire + 1):
         year = start_year + y
         total = 0.0
-        for date, amount in monthly_contribs:
+        for date, amount in monthly_invest:
             if date.year > year:
                 continue
             months_to_maturity = months_total - ((date.year - start_year) * 12 + (date.month - 1))
